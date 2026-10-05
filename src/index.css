@@ -1,0 +1,179 @@
+@import 'tailwindcss';
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --color-bg: #f5f5f7;
+  --color-card: #ffffff;
+  --color-ink: #111114;
+  --color-sub: #6a6a72;
+  --color-line: rgb(0 0 0 / 0.08);
+  --color-fill: rgb(120 120 128 / 0.12);
+  --color-accent: #5552e0;
+  --font-sans: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Inter', 'Segoe UI', system-ui, sans-serif;
+}
+
+:root {
+  color-scheme: light;
+  /* safe areas, with a floor so content clears the rounded corners of the desktop phone frame */
+  --sat: max(env(safe-area-inset-top), 0.75rem);
+  --sab: env(safe-area-inset-bottom);
+}
+.dark {
+  color-scheme: dark;
+  --color-bg: #000000;
+  --color-card: #1c1c1e;
+  --color-ink: #f5f5f7;
+  --color-sub: #9a9aa2;
+  --color-line: rgb(255 255 255 / 0.1);
+  --color-fill: rgb(120 120 128 / 0.26);
+  --color-accent: #8b88ff;
+}
+
+/* Dynamic-Type-like scaling: everything is rem-based and the root follows the device width. 16px floor avoids iOS input zoom. */
+html {
+  font-size: clamp(16px, 4.1vw, 17.5px);
+}
+@media (min-width: 640px) {
+  html {
+    font-size: 16px;
+  }
+  :root {
+    --sat: 1.5rem;
+    --sab: 0.5rem;
+  }
+}
+
+html,
+body {
+  height: 100%;
+}
+#root {
+  height: 100dvh;
+}
+body {
+  @apply bg-bg font-sans text-ink antialiased;
+  overscroll-behavior: none;
+  -webkit-tap-highlight-color: transparent;
+}
+button {
+  cursor: pointer;
+  touch-action: manipulation;
+}
+:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+.no-scrollbar {
+  scrollbar-width: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+@layer components {
+  .card {
+    @apply rounded-3xl bg-card p-4;
+    box-shadow: 0 1px 2px rgb(0 0 0 / 0.04), 0 10px 28px -18px rgb(0 0 0 / 0.18);
+  }
+  .chip {
+    @apply inline-flex items-center gap-1 rounded-full bg-fill px-2.5 py-1 text-xs font-medium whitespace-nowrap text-sub;
+  }
+  .eyebrow {
+    @apply text-xs font-semibold tracking-wider text-sub uppercase;
+  }
+  .btn {
+    @apply flex min-h-12 w-full items-center justify-center gap-2 rounded-2xl bg-ink px-5 font-semibold text-bg disabled:opacity-40;
+  }
+  .btn-quiet {
+    @apply flex min-h-12 w-full items-center justify-center gap-2 rounded-2xl bg-fill px-5 font-semibold text-ink;
+  }
+  .field {
+    @apply w-full rounded-2xl bg-fill px-4 py-3 text-base text-ink outline-none placeholder:text-sub focus:ring-2 focus:ring-accent/50;
+  }
+}
+
+@keyframes shimmer {
+  to {
+    background-position: -200% 0;
+  }
+}
+.shimmer-text {
+  background: linear-gradient(90deg, var(--color-sub) 35%, var(--color-ink) 50%, var(--color-sub) 65%) 0 0 / 200% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: shimmer 1.8s linear infinite;
+}
+.skeleton {
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--color-fill) 30%, transparent 50%, var(--color-fill) 70%) 0 0 / 200% 100%;
+  animation: shimmer 1.6s linear infinite;
+}
+
+@keyframes pulse-dot {
+  50% {
+    transform: scale(1.6);
+    opacity: 0.4;
+  }
+}
+.pulse-dot {
+  @apply size-2 shrink-0 rounded-full bg-accent;
+  animation: pulse-dot 1.2s ease-in-out infinite;
+}
+
+@keyframes wave {
+  0%,
+  100% {
+    transform: scaleY(0.2);
+  }
+  50% {
+    transform: scaleY(1);
+  }
+}
+.wave-bar {
+  width: 3px;
+  height: 3rem;
+  border-radius: 3px;
+  background: var(--color-accent);
+  transform: scaleY(0.1);
+  transition: transform 0.3s;
+}
+.wave-on .wave-bar {
+  animation: wave 0.9s ease-in-out infinite;
+}
+
+@keyframes dash {
+  to {
+    stroke-dashoffset: -32;
+  }
+}
+@keyframes float {
+  50% {
+    transform: translateY(-3px);
+  }
+}
+.graph-edge {
+  stroke: var(--color-sub);
+  stroke-opacity: 0.4;
+  stroke-dasharray: 2 6;
+  stroke-linecap: round;
+  animation: dash 4s linear infinite;
+}
+.graph-node {
+  cursor: pointer;
+  outline-offset: 4px;
+  animation: float 6s ease-in-out infinite;
+}
+.graph-label {
+  font-size: 10.5px;
+  font-weight: 500;
+  fill: var(--color-sub);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  ::before,
+  ::after {
+    animation: none !important;
+  }
+}
