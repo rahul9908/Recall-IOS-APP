@@ -90,7 +90,7 @@ function Capture({ prefill }: { prefill: string }) {
     const who = people.filter((p) => memory.people.includes(p.id))
     const rows = [
       ...phase.extra,
-      ['Person', list(who.map((p) => p.name))],
+      ['Person', list([...who.map((p) => p.name), ...memory.relationships])],
       ['Topic', memory.topics.join(' · ')],
       ['Intent', memory.intent],
       ['Place', memory.places.join(' · ')],
